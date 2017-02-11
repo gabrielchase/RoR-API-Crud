@@ -4,11 +4,6 @@ class ApplicationController < ActionController::API
 	private
 
 	def check_header
-		puts "in check_header"
-		puts "========="
-		puts request.method
-		puts request.content_type 
-		puts "========="
 		if ['POST', 'PUT', 'PATCH'].include? request.method
 			if request.content_type != "application/json"
 				head 406 and return
@@ -17,9 +12,6 @@ class ApplicationController < ActionController::API
 	end
 
 	def validate_type
-		# puts params['data']
-		# puts params['data']['type']
-		# puts params[:controller]
 		if params['data'] && params['data']['type']
 			if params['data']['type'] == params[:controller]
 				return true
