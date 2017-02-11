@@ -21,7 +21,6 @@ class ApplicationController < ActionController::API
 	end
 
 	def validate_user
-		puts "in validate_user"
 		token = request.headers["X-Api-Key"]
 		head 403 and return unless token
 		user = User.find_by token: token
