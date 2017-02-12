@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
 	before_action :check_header
+	before_action :validate_login
 
 	private
 
@@ -14,6 +15,7 @@ class ApplicationController < ActionController::API
 	def validate_type
 		if params['data'] && params['data']['type']
 			if params['data']['type'] == params[:controller]
+				print params['data']['type'] == params[:controller]
 				return true
 			end 
 		end
@@ -21,10 +23,18 @@ class ApplicationController < ActionController::API
 	end
 
 	def validate_user
+		head 403 and return unless @current_user
+	end
+
+	def validate_login
 		token = request.headers["X-Api-Key"]
-		head 403 and return unless token
+		return unless token
 		user = User.find_by token: token
-		head 403 and return unless user
+		return unless user
+		if 15.minutes.ago < user.updated_at
+			user.touch
+			@current_user = user
+		end
 	end
 
 	def render_error(resource, status)
@@ -34,7 +44,8 @@ class ApplicationController < ActionController::API
  	def default_meta
     {
       licence: 'CC-0',
-      authors: ['Saša']
+      authors: ['Saša'],
+			logged_in: (@current_user ? true : false)
     }
 	end
 end

@@ -7,6 +7,7 @@ class SessionsController < ApplicationController
 		if user.authenticate(data[:password])
 			puts "Authenticated pass"
 			user.regenerate_token
+			@current_user = user
 			render json: user, status: :created, meta: default_meta, serializer: ActiveModel::Serializer::SessionSerializer and return 
 		end
 		head 403

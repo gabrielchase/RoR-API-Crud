@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
 	before_action :set_post, only: [:show, :update, :destroy]
+	before_action :validate_login, only: [:create]
 
 	def index
 		posts = Post.all
@@ -26,7 +27,7 @@ class PostsController < ApplicationController
 	def create
 		Post.inspect
 		post = Post.new(post_params)
-		puts "inspect down here"
+		puts "current_user = #{@current_user.full_name}"
 		post.inspect
 		if post.save
 			render json: post, status: :created, meta: default_meta
