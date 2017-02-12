@@ -3,13 +3,14 @@ class PostsController < ApplicationController
 
 	def index
 		posts = Post.all
+		if params[:filter]
+			posts = posts.where(["category = ?", params[:filter]])
+			posts.inspect
+		end
 		if params['sort']
 			f = params['sort'].split(',').first
-			puts f
 			field = f[0] == '-' ? f[1..-1] : f
-			puts field
 			order = f[0] == '-' ? 'DESC' : 'ASC'
-			puts order
 			if Post.new.has_attribute?(field)
 				posts = posts.order("#{field} #{order}")
 			end
